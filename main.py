@@ -7,9 +7,11 @@ import time
 ########################## CONFIG ##########################
 tokens_file_name = "tokens.txt"
 results_file_name = "results.txt"
+email_tokens_file_name = "emailtokens.txt"
 reset_results_file = True  # Add/Don't add new results to old results (truncate)
 save_guild_name = False # Save/Don't save the name of the guild
 save_guild_id = True  # Save/Don't save the id of the guild
+save_only_mail_tokens_in_own_file = True
 
 ########################### CODE ###########################
 API_PATH = "https://discord.com/api/v9/users/@me/guilds"
@@ -22,6 +24,7 @@ count = 0
 token_l = 0
 
 result_text = ""
+mail_text = ""
 
 pystyle.Write.Print("""
 ░██████╗░██╗░░░██╗██╗██╗░░░░░██████╗░██╗░░░██╗
@@ -55,6 +58,11 @@ for token in tokens:
           number = "Email Verified"
           pystyle.Write.Print(f"[+] Token done | User: {token_name}#{discriminator} | Verification: {number}\n", pystyle.Colors.cyan, interval=0)
           if os.name == "nt": ctypes.windll.kernel32.SetConsoleTitleW(f'Guilds: {count} | Tokens: {token_l}')
+          if save_only_mail_tokens_in_own_file:
+              mail_text = f"{token}\n"
+              token_file = open(email_tokens_file_name, "a", encoding="utf8", errors="ignore")
+              token_file.write(mail_text)
+              tokens_file.close()
 
     except:
         print(f"Unknown Error {response.text} ({token})")
